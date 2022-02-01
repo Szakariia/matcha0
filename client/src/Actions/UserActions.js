@@ -2,8 +2,6 @@ import axios from "axios";
 import * as actionTypes from "./ActionTypes.js";
 import AuthService from "../services/authService";
 
-// AUTH : update state after login and getting the Auth from local storage
-
 // POST :  User Login
 export const loginAction = (inputValue) => (dispatch) => {
   console.log("start LOGIN");

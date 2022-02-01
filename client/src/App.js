@@ -1,5 +1,4 @@
 import Navbar from "./Components/Navbar/Navbar";
-import AuthNavbar from "./Components/Navbar/AuthNavbar";
 
 import Home from "./Components/Home";
 import Discover from "./Components/Discover";
@@ -10,26 +9,49 @@ import Register from "./Components/Register/Register";
 import Login from "./Components/Login/Login";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useSelector } from "react-redux";
 
-import authlocalStorage from "./Auth";
+import PrivateRoute from "./services/authRoutes";
 
 function App() {
-  const state = useSelector((state) => state.userReducers);
-  console.log("test");
   return (
     <div className=" bg-no-repeat bg-cover min-h-screen">
       <Router>
-        {state?.isLoggedIn ? <AuthNavbar /> : <Navbar />}
+        <Navbar />
         <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/discover" element={<Discover />} />
-          <Route path="/likes" element={<Likes />} />
-          <Route path="/messages" element={<Messages />} />
+          {/* PUBLIC ROUTES */}
 
-          {/* <Route path="" component={}/> */}
+          <Route exact path="/" element={<Home />} />
+          <Route exact path="/register" element={<Register />} />
+          <Route exact path="/login" element={<Login />} />
+
+          {/* PRIVATE ROUTES */}
+          <Route
+            exact
+            path="/Discover"
+            element={
+              <PrivateRoute>
+                <Discover />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/likes"
+            element={
+              <PrivateRoute>
+                <Likes />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/messages"
+            element={
+              <PrivateRoute>
+                <Messages />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </Router>
     </div>

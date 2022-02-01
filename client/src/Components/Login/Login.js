@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Img from "../../img/signup_img.jpeg";
@@ -9,32 +9,41 @@ import { Navigate } from "react-router";
 import { Link } from "react-router-dom";
 function Login() {
   // defined Variable
+
   const dispatch = useDispatch();
   const state = useSelector((state) => state.userReducers);
   const [errorValidator, seterrorValidator] = useState({});
+  const firstUpdate = useRef(true);
   const [inputValues, setInputValues] = useState({
     username: "",
     password: "",
   });
 
-  // upadate
+  // update inputes Value
   const updateField = (e) => {
-    // update inputes Value
     setInputValues({
       ...inputValues,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleInputValidation = (event) => {
-    seterrorValidator(validator(inputValues, true));
-    console.log(errorValidator);
-  };
+  // Get new errors
+  useEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+    // Validator function
+    const error = validator(inputValues, true);
+    seterrorValidator({ ...errorValidator, error });
+  }, [inputValues]);
+
   // handel submit form
-  function handleSubmit() {
+  function handleSubmit(e) {
+    e.preventDefault();
     dispatch(loginAction(inputValues));
   }
-  // console.log(errorValidator, inputValues);
+
   return state?.isLoggedIn ? (
     <Navigate to="/" />
   ) : (
@@ -70,7 +79,7 @@ function Login() {
                 <span className="text-primary font-bold">Username</span>
                 <input
                   class={`appearance-none block w-full bg-gray-200 text-gray-700 ${
-                    state.messageError || errorValidator?.username
+                    state.messageError || errorValidator.error?.username
                       ? "border border-red-500"
                       : "border"
                   } rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white`}
@@ -78,11 +87,10 @@ function Login() {
                   name="username"
                   value={inputValues.username}
                   onChange={updateField}
-                  onBlur={handleInputValidation}
                 />
-                {errorValidator?.username ? (
+                {errorValidator.error?.username ? (
                   <p className="mb-2 text-red-500 text-xs italic">
-                    {errorValidator?.username}
+                    {errorValidator.error?.username}
                   </p>
                 ) : (
                   ""
@@ -93,7 +101,7 @@ function Login() {
                 <span className="text-primary font-bold ">Passsword</span>
                 <input
                   class={`appearance-none block w-full bg-gray-200 text-gray-700 ${
-                    state.messageError || errorValidator?.password
+                    state.messageError || errorValidator.error?.password
                       ? "border border-red-500"
                       : "border"
                   } rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white`}
@@ -102,11 +110,10 @@ function Login() {
                   name="password"
                   value={inputValues.password}
                   onChange={updateField}
-                  onBlur={handleInputValidation}
                 />
-                {errorValidator?.password ? (
+                {errorValidator.error?.password ? (
                   <p className="mb-2 text-red-500 text-xs italic">
-                    {errorValidator?.password}
+                    {errorValidator.error?.password}
                   </p>
                 ) : (
                   ""
@@ -118,12 +125,14 @@ function Login() {
               <div className="grid grid-rows-2 place-content-center">
                 <button
                   className={`py-2 px-4 font-semibold  rounded ${
-                    errorValidator
+                    errorValidator.error || firstUpdate.current
                       ? " cursor-not-allowed bg-gray-200 text-gray-400 border border-gray-200 "
                       : "hover:bg-white text-white bg-primary border border-primary hover:text-primary  hover:border-black"
                   } `}
                   type="submit"
-                  // disabled={inButton}
+                  disabled={
+                    errorValidator.error || firstUpdate.current ? true : false
+                  }
                 >
                   Login
                 </button>
@@ -146,4 +155,3 @@ function Login() {
 export default Login;
 
 // 1 - appearance-none to reset any browser specific styling on an element.
-// Feat Chore Fix Refact

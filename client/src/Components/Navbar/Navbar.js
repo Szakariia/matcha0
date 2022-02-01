@@ -1,10 +1,14 @@
 import React from "react";
+import AuthNavbar from "./AuthNavbar";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Navbar() {
   const Navigate = useNavigate();
-
-  return (
+  const state = useSelector((state) => state.userReducers);
+  return state?.isLoggedIn ? (
+    <AuthNavbar />
+  ) : (
     <div>
       <div className=" bg-primary">
         <div className="max-w-6xl mx-auto text-primary_2">

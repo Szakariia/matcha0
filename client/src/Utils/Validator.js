@@ -20,9 +20,8 @@ const isEmail = (email) => {
 };
 
 const isUsername = (username) => {
-  if (!username) return { ...errorMessage, username: "no username" };
-  else if (username.length > 50)
-    return { ...errorMessage, username: "short username" };
+  if (!username) return { username: "no username" };
+  else if (username.length > 50) return { username: "short username" };
   return 0;
 };
 
@@ -43,16 +42,14 @@ const isLastName = (lastName) => {
 const isPassword = (password) => {
   const passwordRegex =
     /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}$/;
-  if (!password) return { ...errorMessage, password: "no password" };
+  if (!password) return { password: "no password" };
   else {
     if (password.length < 8)
       return {
-        ...errorMessage,
         password: "password must at least be 8 characters in length",
       };
     if (!password.match(passwordRegex))
       return {
-        ...errorMessage,
         password:
           "password must contain at least one lowercase letter, one uppercase letter, one numeric digit, and one special character",
       };
@@ -61,13 +58,14 @@ const isPassword = (password) => {
 };
 
 const validator = (data, status) => {
+  console.log("we are in validator ", data);
   const { email, username, firstName, lastName, password } = data;
   return status
     ? isUsername(username) || isPassword(password)
-    : isEmail(email) ||
-        isUsername(username) ||
-        isFirstName(firstName) ||
+    : isFirstName(firstName) ||
         isLastName(lastName) ||
+        isUsername(username) ||
+        isEmail(email) ||
         isPassword(password);
 };
 

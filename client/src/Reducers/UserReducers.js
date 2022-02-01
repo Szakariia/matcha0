@@ -21,7 +21,7 @@ const userLogin = (state, action, status) => {
     : {
         ...state,
         messageError: action.payload,
-        successRequest: true,
+        successRequest: false,
         isLoggedIn: false,
       };
 };
@@ -37,7 +37,7 @@ const userRegister = (state, action, status) => {
     : {
         ...state,
         messageError: action.payload,
-        successRequest: true,
+        successRequest: false,
         isLoggedIn: false,
       };
 };
